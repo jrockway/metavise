@@ -1,0 +1,3 @@
+#!/bin/sh
+cd ../../..;
+exec sudo fghack mongrel2 config/config.sqlite 6a7b8e53-4f7a-4a11-8f74-7f2ac5eaa60b

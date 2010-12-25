@@ -1,0 +1,13 @@
+#!/bin/sh
+cd ../../..
+if [ ! -e app.psgi ]
+then
+    echo "No app.psgi in $PWD!";
+    exit 1;
+fi
+
+exec plackup -I lib -s AnyEvent::Mongrel2 \
+    --request-endpoint tcp://127.0.0.1:9000 \
+    --response-endpoint tcp://127.0.0.1:9001 \
+    --request-identity 1a6b65b6-70c8-4fb6-a056-fc82d09f7204 \
+    --coro 0

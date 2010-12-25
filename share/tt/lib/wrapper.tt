@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>[% title | html %]</title>
+    <script type="text/javascript" src="[% js('jquery-1.4.4') %]"></script>
+    <script type="text/javascript" src="[% js('underscore') %]"></script>
+    <script type="text/javascript" src="[% js('backbone') %]"></script>
+    <script type="text/javascript" src="[% js('socket') %]"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="[% css('1140') %]" type="text/css" media="screen" />
+
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" href="[% css('ie') %]" type="text/css" media="screen" />
+    <![endif]-->
+
+    <link rel="stylesheet" href="[% css('typeimg') %]" type="text/css" media="screen" />
+    <link rel="stylesheet" href="[% css('smallerscreen') %]" media="only screen and (max-width: 1023px)" />
+    <link rel="stylesheet" href="[% css('mobile') %]" media="handheld, only screen and (max-width: 767px)" />
+    <link rel="stylesheet" href="[% css('layout') %]" type="text/css" media="screen" />
+    <link rel="stylesheet" href="[% css('metavise') %]" type="text/css" />
+</head>
+<body>
+<div class="container">
+<div id="toprow" class="row">
+  <div id="topname" class="threecol">
+    <a href="[% c.uri_for('/') | html %]">
+      <img alt="metavise logo: a telescope"
+           src="[% png('telescope') %]" />
+    </a>
+  </div>
+  <div class="sixcol"><p id="appname">Metavise</p></div>
+  <div class="threecol last"><br id="rightlogo"/></div>
+</div>
+[% content %]
+</div>
+</body>
+</html>

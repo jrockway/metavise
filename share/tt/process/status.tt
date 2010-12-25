@@ -1,0 +1,4 @@
+[% USE f = DateTime::Format('DateTime::Format::Strptime', { pattern =>
+"%a %b %e %H:%M:%S %Z %Y", time_zone => 'America/Chicago' }) %]
+[% process.name %]: [% process.status.pid %]
+(up since [% f.format(process.status.time) %])

@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="onecol"><p /></div>
+  <div class="tencol">
+    <ul id="process_list">
+      [% FOREACH process IN processes %]
+      <li class="process"><p>[% process.name | html %]</p></li>
+      [% END %]
+    </ul>
+  </div>
+  <div class="onecol last"><p /></div>
+</div>
