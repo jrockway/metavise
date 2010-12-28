@@ -1,0 +1,6 @@
+[% USE df = DateTime::Format('DateTime::Format::Strptime',
+            { pattern => '%a %b %e %T %Z %Y' }) %]
+
+[% MACRO date(d) BLOCK %]
+  [% IF d; FILTER html; df.format(d); END; ELSE; END; %]
+[% END %]

@@ -14,7 +14,8 @@ has 'process_set' => (
     default  => sub { +{} },
     traits   => ['Hash'],
     handles  => {
-        processes     => 'keys',
+        process_names => 'keys',
+        processes     => 'values',
         process_count => 'count',
         get_process   => 'get',
         _add_process  => 'set',
@@ -26,6 +27,14 @@ has 'directory' => (
     isa       => Dir,
     predicate => 'has_directory',
     coerce    => 1,
+);
+
+
+has 'log_directory' => (
+    is       => 'ro',
+    isa      => Dir,
+    coerce   => 1,
+    required => 1,
 );
 
 has 'on_change' => (
@@ -56,19 +65,31 @@ sub add_directory {
     my ($self, $dir) = @_;
     weaken $self;
 
-    while (my $p = $dir->next) {
-        if(-d $p && -e $p->file('run')){
-            my $d = $p->resolve->stringify;
-            $self->add_process(
-                Metavise::Process->new(
-                    root => $p,
-                    on_change => sub { $self->handle_change($d, @_) },
-                ),
+    while (my $path = $dir->next) {
+        if(-d $path && -e $path->file('run')){
+            my $svcdir = $path->resolve->stringify;
+            next if Path::Class::file($svcdir)->basename =~ /^[.]/;
+
+            my $p = Metavise::Process->new(
+                root      => $path,
+                on_change => sub { $self->handle_change($svcdir, @_) },
+                log_to    => $self->log_directory,
             );
+            $self->add_process( $p );
+
+            my $logpath = $path->subdir('log');
+            if( -d $logpath && -e $logpath->file('run') ){
+                my $logsvcdir = $logpath->resolve->stringify;
+                $self->add_process(
+                    Metavise::Process->new(
+                        root      => $logpath,
+                        log_to    => $self->log_directory,
+                        name      => $p->name . "/log",
+                        on_change => sub { $self->handle_change($logsvcdir, @_) },
+                    ),
+                );
+            }
         }
-        # if(-d $p && -e -d $p->subdir('log')){
-        #     $self->_add_directory($p);
-        # }
     }
 }
 

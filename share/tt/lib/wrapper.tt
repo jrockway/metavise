@@ -1,11 +1,11 @@
 <html>
   <head>
-    <title>[% title | html %]</title>
+    <title>[% title | html %] : Metavise</title>
     <script type="text/javascript" src="[% js('jquery-1.4.4') %]"></script>
+    <script type="text/javascript" src="[% js('jquery.form') %]"></script>
     <script type="text/javascript" src="[% js('underscore') %]"></script>
     <script type="text/javascript" src="[% js('backbone') %]"></script>
-    <script type="text/javascript" src="[% js('socket') %]"></script>
-
+    <script type="text/javascript" src="[% js('app') %]"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="[% css('1140') %]" type="text/css" media="screen" />
 
@@ -21,17 +21,15 @@
 </head>
 <body>
 <div class="container">
-<div id="toprow" class="row">
-  <div id="topname" class="threecol">
-    <a href="[% c.uri_for('/') | html %]">
-      <img alt="metavise logo: a telescope"
-           src="[% png('telescope') %]" />
-    </a>
+  <div id="toprow" class="row">
+    <div class="onecol"><br /></div>
+    <div class="tencol"><p id="appname">METAVISE</p></div>
+    <div class="onecol last"><br /></div>
   </div>
-  <div class="sixcol"><p id="appname">Metavise</p></div>
-  <div class="threecol last"><br id="rightlogo"/></div>
-</div>
-[% content %]
+  [% content %]
+  <div class="row">
+    <!-- <textarea id="status_debug" rows="25" cols="80">not ok</textarea> -->
+  </div>
 </div>
 </body>
 </html>

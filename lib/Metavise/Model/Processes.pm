@@ -5,6 +5,9 @@ use warnings;
 use true;
 use namespace::autoclean;
 use Metavise::Group;
+use Metavise::App::Statlog;
+use RRDTool::OO;
+use Carp qw(confess);
 
 use parent 'Catalyst::Model';
 
@@ -18,14 +21,14 @@ sub ACCEPT_CONTEXT {
     my $l = $c->model('Listeners');
 
     $self->{group} ||= Metavise::Group->new(
-        directory => $self->{directory},
-        on_change => sub { $l->post_event('process', @_) },
+        directory     => $self->{directory},
+        log_directory => $self->{rrd},
+        on_change     => sub { }, #$l->post_event('process', @_) },
     );
 
     if(my $name = shift @args){
-        warn $name;
         return $self->{group}->get_process($name);
     }
-    warn "return";
+
     return $self->{group};
 }

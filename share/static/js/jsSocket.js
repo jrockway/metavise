@@ -258,7 +258,7 @@ jsSocket.prototype = {
             self[type](data);
         }, 0);
     },
-    
+
     // JSSocket callbacks
     onLoadedCallback: function (self, data) {
         self.log('loaded');
@@ -268,9 +268,9 @@ jsSocket.prototype = {
         if (self.autoconnect) {
             self.connect();
         }
-        
+
     },
-    
+
     onOpenCallback: function (self, data) {
         if (data === true) {
             self.log('connected');
@@ -279,7 +279,7 @@ jsSocket.prototype = {
             if (self.keepalive) {
                 self.keepalive_timer = setInterval(function () {
                     self.keepalive.apply(self);
-                }, 60 * 1000); 
+                }, 60 * 1000);
             }
 
             self.reconnect_countdown = 3;
@@ -296,9 +296,9 @@ jsSocket.prototype = {
                 self.reconnect();
             }
         }
-        
+
     },
-    
+
     onCloseCallback: function (self, data) {
         self.connected = false;
         self.log('disconnected');
@@ -313,7 +313,7 @@ jsSocket.prototype = {
             self.reconnect();
         }
     },
-    
+
     onDataCallback: function (self, data) {
         return atob(data);
     },

@@ -1,11 +1,43 @@
-<div class="row">
-  <div class="onecol"><p /></div>
-  <div class="tencol">
-    <ul id="process_list">
-      [% FOREACH process IN processes %]
-      <li class="process"><p>[% process.name | html %]</p></li>
-      [% END %]
-    </ul>
+
+<div id="processes"></div>
+
+<script type="text/template" id="process_template">
+  <div class="process">
+    <div class="row">
+      <div class="onecol"><br /></div>
+      <div class="twocol"><b><%= name %></b></div>
+      <div class="sixcol">
+        <% if(up == 1) { %>
+          up <% if(paused == 1) { %>(paused)<% } %>
+          <%= pid %>
+        <% } else { %>
+          down
+        <% } %>
+        since <%= since %>
+      </div>
+      <div class="twocol buttons">
+        <% if(up == 0) { %><a href="#" class="process_act">u</a><% } %>
+        <% if(up == 1) { %><a href="#" class="process_act">d</a><% } %>
+        <% if(up == 1){ %>
+        <% if(paused == 0) { %><a href="#" class="process_act">p</a><% } %>
+        <% if(paused == 1) { %><a href="#" class="process_act">c</a><% } %>
+        <a href="#" class="process_act">t</a>
+        <a href="#" class="process_act">i</a>
+        <a href="#" class="process_act">k</a>
+        <a href="#" class="process_act">a</a>
+        <a href="#" class="process_act">h</a>
+        <% } %>
+      </div>
+      <div class="onecol last"><br /></div>
+    </div>
+    <div class="row">
+      <div class="threecol"><br /></div>
+      <div class="fourcol">
+        <%= top.mem_size %> (<%= top.mem_resident %>)
+        <%= top.time_utime %>user + <%= top.time_stime %>sys =  <%= top.time_total %>
+      </div>
+      <div class="onecol last"><br /></div>
+    </div>
+    <br />
   </div>
-  <div class="onecol last"><p /></div>
-</div>
+</script>

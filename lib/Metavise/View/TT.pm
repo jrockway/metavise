@@ -13,6 +13,7 @@ __PACKAGE__->config(
     CATALYST_VAR       => 'c',
     render_die         => 1,
     WRAPPER            => 'wrapper.tt',
+    PRE_PROCESS        => 'macros.tt',
     INCLUDE_PATH       => [
         Metavise->path_to( 'share', 'tt' ),
         Metavise->path_to( 'share', 'tt', 'lib' ),

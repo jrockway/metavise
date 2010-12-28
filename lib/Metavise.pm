@@ -6,8 +6,6 @@ use namespace::autoclean;
 
 use Catalyst qw/
     -Debug
-    ConfigLoader
-    Static::Simple
 /;
 
 extends 'Catalyst';
@@ -19,6 +17,7 @@ __PACKAGE__->config(
     disable_component_resolution_regex_fallback => 1,
     'Model::Processes' => {
         directory => '/home/jon/.dotfiles/services/',
+        rrd       => '/tmp/rrd/',
     },
 );
 

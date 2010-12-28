@@ -1,3 +1,21 @@
-#toprow  { padding-top: 10px; padding-bottom: 10px; }
-#appname { font-size: 35px; text-align: center; }
-#flashcontent { display: none; }
+#toprow * {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 0;
+}
+
+#toprow p {
+    margin-bottom: 0;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    background-color: black;
+}
+
+.odd   {
+    background-color: #00aa32; border: 1px solid red
+}
+
+.buttons {
+    text-align: right;
+}
