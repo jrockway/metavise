@@ -23,7 +23,8 @@
 <div class="container">
   <div id="toprow" class="row">
     <div class="onecol"><br /></div>
-    <div class="tencol"><p id="appname">METAVISE</p></div>
+    <div class="tencol"><p id="appname">METAVISE - [% c.config.title
+    | html %]</p></div>
     <div class="onecol last"><br /></div>
   </div>
   [% content %]
