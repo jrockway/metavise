@@ -47,7 +47,7 @@ sub _build_time_watcher {
 }
 
 has 'metrics' => (
-    isa        => 'HashRef[CodeRef]',
+    isa        => 'HashRef[HashRef]',
     traits     => ['Hash'],
     lazy_build => 1,
     handles    => {
@@ -55,6 +55,9 @@ has 'metrics' => (
         'get_metric'   => 'get',
     },
 );
+
+sub get_metric_type { $_[0]->get_metric($_[1])->{type} }
+sub get_metric_updater { $_[0]->get_metric($_[1])->{code} }
 
 has 'graphs' => (
     isa        => 'HashRef[ArrayRef]',
@@ -81,16 +84,22 @@ sub _build_metrics {
 
     my %result;
     for my $metric (qw/utime stime/) {
-        $result{$metric} = sub {
-            my ($self, $cb) = @_;
-            $cb->($self->top->time->$metric / 100), # jiffies?
+        $result{$metric} = {
+            type => 'DERIVE',
+            code => sub {
+                my ($self, $cb) = @_;
+                $cb->($self->top->time->$metric),
+            },
         };
     }
 
     for my $metric (qw/resident size/){
-        $result{$metric} = sub {
-            my ($self, $cb) = @_;
-            $cb->($self->top->mem->$metric),
+        $result{$metric} = {
+            type => 'GAUGE',
+            code => sub {
+                my ($self, $cb) = @_;
+                $cb->($self->top->mem->$metric),
+            },
         };
     }
 
@@ -117,8 +126,9 @@ sub BUILD {
         my @data = map {
             ( data_source => {
                 name => $_,
-                type => 'GAUGE',
-            }),
+                type => $self->get_metric_type($_),
+                min  => 0,
+            })
         } $self->list_metrics;
 
         $self->create(
@@ -169,7 +179,7 @@ sub tick {
     $self->update_tick( _time => $time );
 
     for my $metric ($self->list_metrics){
-        my $code = $self->get_metric($metric);
+        my $code = $self->get_metric_updater($metric);
         my $cb = sub {
             my $result = shift;
             $self->update_tick( $metric => $result );
