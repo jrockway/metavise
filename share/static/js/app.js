@@ -96,7 +96,6 @@ $(document).ready(function() {
                 $(this.el).hide();
             }
             else {
-                console.log("graph " + this.model.url());
                 $(this.el).attr("src", window.location + this.model.url());
                 $(this.el).show();
             }
