@@ -20,5 +20,3 @@ __PACKAGE__->config(
         rrd       => '/tmp/rrd/',
     },
 );
-
-__PACKAGE__->setup();

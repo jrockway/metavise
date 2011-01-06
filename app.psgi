@@ -5,6 +5,7 @@ use Plack::App::Directory;
 use lib 'lib';
 use Metavise;
 
+Metavise->setup();
 Metavise->setup_engine('PSGI');
 
 my $static = Plack::App::Directory->new( root => 'share/static' )->to_app;
