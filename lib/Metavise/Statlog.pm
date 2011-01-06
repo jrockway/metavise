@@ -80,14 +80,14 @@ sub _build_metrics {
     my $self = shift;
 
     my %result;
-    for my $metric (qw/rtime utime stime/) {
+    for my $metric (qw/utime stime/) {
         $result{$metric} = sub {
             my ($self, $cb) = @_;
-            $cb->($self->top->time->$metric),
+            $cb->($self->top->time->$metric / 100), # jiffies?
         };
     }
 
-    for my $metric (qw/rss resident size vsize share/) {
+    for my $metric (qw/resident size/){
         $result{$metric} = sub {
             my ($self, $cb) = @_;
             $cb->($self->top->mem->$metric),
@@ -101,16 +101,12 @@ sub _build_graphs {
     my $self = shift;
     return {
         memory => [
-            draw => { dsname => 'rss', legend => 'rss', color => 'FF0000' },
             draw => { dsname => 'resident', legend => 'resident', color => '00FF00' },
             draw => { dsname => 'size', legend => 'size', color => '0000FF' },
-            draw => { dsname => 'vsize', legend => 'vsize', color => 'FF00FF' },
-           # draw => { dsname => 'share', legend => 'share', color => '00FFFF'  },
         ],
         cpu => [
             draw => { dsname => 'utime', legend => 'utime', color => 'FF0000' },
             draw => { dsname => 'stime', legend => 'stime', color => '00FF00' },
-            draw => { dsname => 'rtime', legend => 'rtime', color => '0000FF' },
         ],
     };
 }

@@ -11,9 +11,20 @@ var ProcessCollection = Backbone.Collection.extend({
 
 var ProcessList = new ProcessCollection();
 
+var GraphModel = Backbone.Model.extend({
+    url: function() {
+        return "/process/" + this.get("process") +
+            "/graphs/" + this.get("type") + ".png";
+    }
+});
+
+var CurrentGraph = new GraphModel({ type: undefined, process: undefined });
+
 var ProcessView;
 var AppView;
+var GraphView;
 var App;
+var Graph;
 
 $(document).ready(function() {
     ProcessView = Backbone.View.extend({
@@ -22,7 +33,7 @@ $(document).ready(function() {
         template: _.template($("#process_template").html()),
 
         initialize: function() {
-            _.bindAll(this, "render", "svc");
+            _.bindAll(this, "render", "svc", "graph");
             this.model.bind("change", this.render);
         },
 
@@ -34,12 +45,18 @@ $(document).ready(function() {
 
         events: {
             "click .process_act": "svc",
+            "click .graphlink": "graph"
         },
 
         svc: function(e) {
             var cmd = $(e.currentTarget).text();
             this.model.svc(cmd);
             this.model.save();
+        },
+
+        graph: function(e) {
+            var type = $(e.currentTarget).attr("title");
+            CurrentGraph.set({ process: this.model.id, type: type });
         },
     });
 
@@ -63,7 +80,34 @@ $(document).ready(function() {
         },
     });
 
+    GraphView = Backbone.View.extend({
+        el: $("#graph"),
+        events: { "click": "click" },
+        interval: undefined,
+        initialize: function() {
+            $(this.el).hide();
+            _.bindAll(this, "render", "click");
+            CurrentGraph.bind("change", this.render);
+            $(this.el).hide();
+        },
+
+        render: function() {
+            if(this.model.get("process") == undefined){
+                $(this.el).hide();
+            }
+            else {
+                console.log("graph " + this.model.url());
+                $(this.el).attr("src", window.location + this.model.url());
+                $(this.el).show();
+            }
+        },
+        click: function() {
+            this.model.set({ process: undefined });
+        }
+    });
+
     App = new AppView();
+    Graph = new GraphView({ model: CurrentGraph });
     ProcessList.fetch();
 
     setInterval( function() { ProcessList.fetch() }, 10000 );

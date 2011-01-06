@@ -19,3 +19,14 @@
 .buttons {
     text-align: right;
 }
+
+a.graphlink {
+    text-decoration: underline;
+    color: black;
+    font-weight: normal;
+    border: none;
+}
+
+#graphdiv {
+    text-align: center;
+}

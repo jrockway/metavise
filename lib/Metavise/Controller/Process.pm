@@ -162,15 +162,15 @@ sub graphs : Chained('process') Args(1) {
         $c->req->params->{seconds} ? $c->req->params->{seconds} :
         $c->req->params->{minutes} ? $c->req->params->{minutes} * 60 :
         $c->req->params->{hours}   ? $c->req->params->{hours} * 60 * 60 :
-        4 * 60 * 60;
+            8 * 60 * 60;
 
     my ($fh, $file) = tempfile;
 
     my @params = (
-        end   => 'now',
-        start => "now - $seconds seconds",
-        width => 200,
-        height => 70,
+        end    => 'now',
+        start  => "now - $seconds seconds",
+        width  => 500,
+        height => 100,
     );
 
     $proc->statlog->save_graph_to($graph, $file, @params);

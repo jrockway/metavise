@@ -94,7 +94,7 @@ has 'watchers' => (
     },
 );
 
-sub BUILD { $_[0]->svstat }
+sub BUILD { $_[0]->svstat; $_[0]->statlog }
 
 sub _build_svstat {
     my $self = shift;
