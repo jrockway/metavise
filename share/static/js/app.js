@@ -55,6 +55,36 @@ var ProcessView;
 var AppView;
 var App;
 
+var longPoll = {
+    retryLater: function () {
+        if(retryTimeout == undefined){
+            longPoll.retryTimeout = setTimeout( longPoll.poll, 10000 );
+        }
+    },
+    refresh: function(data) {
+        ProcessList.refresh(data);
+    },
+    poll: function() {
+        longPoll.retryTimeout = undefined;
+        longPoll.xhr = $.ajax({
+            url: "/process/long_poll",
+            type: "GET",
+            dataType: "json",
+            timeout: 120000,
+            error: function() { longPoll.retryLater() },
+            success: function(data, status, xhr){
+                if(data != undefined && data != null){
+                    longPoll.refresh(data);
+                    longPoll.poll();
+                }
+                else {
+                    longPoll.retryLater();
+                }
+            },
+        });
+    },
+};
+
 $(document).ready(function() {
     ProcessView = Backbone.View.extend({
         tagName: "div",
@@ -89,7 +119,11 @@ $(document).ready(function() {
             if(this.model.get("needsConfirm") && cmd == "confirm"){
                 this.model.set({"needsConfirm": false}, {silent: true});
                 this.model.svc(this.model.get("pendingCmd"));
-                this.model.save();
+                longPoll.xhr.abort();
+                this.model.save({}, {
+                    success: longPoll.poll,
+                    error: longPoll.poll,
+                });
             }
             else if(this.model.get("needsConfirm") && cmd == "cancel") {
                 this.model.set({"needsConfirm": false});
@@ -123,7 +157,6 @@ $(document).ready(function() {
 
     App = new AppView();
     ProcessList.fetch();
-
-    setInterval( function() { ProcessList.fetch() }, 10000 );
+    longPoll.poll();
 });
 
