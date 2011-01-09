@@ -57,8 +57,9 @@ var AppView;
 var App;
 
 var longPoll = {
+    retryTimeout: undefined,
     retryLater: function () {
-        if(retryTimeout == undefined){
+        if(longPoll.retryTimeout == undefined){
             longPoll.retryTimeout = setTimeout( longPoll.poll, 10000 );
         }
     },
