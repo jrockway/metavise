@@ -6,16 +6,21 @@
     <div class="twocol">
       <div class="procname"><%= name %></div>
       <div class="buttons">
-        <% if(up == 0) { %><a title="start" class="process_act">u</a><% } %>
-        <% if(up == 1) { %><a title="stop" class="process_act">d</a><% } %>
-        <% if(up == 1){ %>
-        <% if(paused == 0) { %><a title="pause" class="process_act">p</a><% } %>
-        <% if(paused == 1) { %><a title="unpause" class="process_act">c</a><% } %>
-        <a title="terminate" class="process_act">t</a>
-        <a title="interrupt" class="process_act">i</a>
-        <a title="kill" class="process_act">k</a>
-        <a title="alarm" class="process_act">a</a>
-        <a title="hangup" class="process_act">h</a>
+        <% if(!needsConfirm){ %>
+          <% if(up == 0) { %><a title="start" class="process_act">u</a><% } %>
+          <% if(up == 1) { %><a title="stop" class="process_act">d</a><% } %>
+          <% if(up == 1){ %>
+            <% if(paused == 0) { %><a title="pause" class="process_act">p</a><% } %>
+            <% if(paused == 1) { %><a title="unpause" class="process_act">c</a><% } %>
+            <a title="terminate" class="process_act">t</a>
+            <a title="interrupt" class="process_act">i</a>
+            <a title="kill" class="process_act">k</a>
+            <a title="alarm" class="process_act">a</a>
+            <a title="hangup" class="process_act">h</a>
+          <% } %>
+        <% } else { %>
+        <a title="doIt" class="process_act">confirm</a>
+        <a title="nevermind" class="process_act">cancel</a>
         <% } %>
       </div>
     </div>

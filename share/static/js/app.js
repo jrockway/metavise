@@ -11,6 +11,7 @@ var GraphModel = Backbone.Model.extend({
 });
 
 var Process = Backbone.Model.extend({
+    defaults: { needsConfirm: false, pendingCmd: "" },
     initialize: function() {
         this.graph = { small: {}, big: {} };
         this.graph.small.cpu = new GraphModel({
@@ -85,8 +86,17 @@ $(document).ready(function() {
 
         svc: function(e) {
             var cmd = $(e.currentTarget).text();
-            this.model.svc(cmd);
-            this.model.save();
+            if(this.model.get("needsConfirm") && cmd == "confirm"){
+                this.model.set({"needsConfirm": false}, {silent: true});
+                this.model.svc(this.model.get("pendingCmd"));
+                this.model.save();
+            }
+            else if(this.model.get("needsConfirm") && cmd == "cancel") {
+                this.model.set({"needsConfirm": false});
+            }
+            else {
+                this.model.set({"needsConfirm": true, pendingCmd: cmd});
+            }
         },
 
     });
