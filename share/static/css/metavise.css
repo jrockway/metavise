@@ -27,3 +27,10 @@
 .process {
     margin-bottom: 30px;
 }
+
+#hovergraph {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+}

@@ -17,27 +17,27 @@ var Process = Backbone.Model.extend({
         this.graph.small.cpu = new GraphModel({
             process: this.id,
             type: "cpu",
-            height: 40,
+            height: 45,
             width: 130,
         });
         this.graph.small.mem = new GraphModel({
             process: this.id,
             type: "memory",
-            height: 40,
+            height: 45,
             width: 130,
         });
 
         this.graph.big.cpu = new GraphModel({
             process: this.id,
             type: "cpu",
-            height: 150,
-            width: 300,
+            height: 200,
+            width: 500,
         });
         this.graph.big.mem = new GraphModel({
             process: this.id,
             type: "memory",
-            height: 150,
-            width: 300,
+            height: 200,
+            width: 500,
         });
     },
     svc: function(c) {
