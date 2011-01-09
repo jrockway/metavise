@@ -68,7 +68,7 @@ var longPoll = {
     poll: function() {
         longPoll.retryTimeout = undefined;
         longPoll.xhr = $.ajax({
-            url: "/process/long_poll",
+            url: document.URL + "process/long_poll",
             type: "GET",
             dataType: "json",
             timeout: 120000,
