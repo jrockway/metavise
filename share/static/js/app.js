@@ -12,9 +12,14 @@ var ProcessCollection = Backbone.Collection.extend({
 var ProcessList = new ProcessCollection();
 
 var GraphModel = Backbone.Model.extend({
+    defaults: {
+        width: 500,
+        height: 100
+    },
     url: function() {
-        return "/process/" + this.get("process") +
-            "/graphs/" + this.get("type") + ".png";
+        return "/process/" + this.get("process") + "/graphs/" +
+            this.get("width") + "x" + this.get("height") + "/" +
+            this.get("type") + ".png";
     }
 });
 

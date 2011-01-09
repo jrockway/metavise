@@ -136,8 +136,8 @@ sub act_PUT {
     $c->detach;
 }
 
-sub graphs : Chained('process') Args(1) {
-    my ($self, $c, $graph) = @_;
+sub graphs : Chained('process') Args(2) {
+    my ($self, $c, $size, $graph) = @_;
     $graph =~ s/[.]([^.]+)$//; # todo allow this to define the format
 
     my $proc = $c->stash->{process};
@@ -164,13 +164,21 @@ sub graphs : Chained('process') Args(1) {
         $c->req->params->{hours}   ? $c->req->params->{hours} * 60 * 60 :
             8 * 60 * 60;
 
+    my $width  = 500;
+    my $height = 100;
+
+    if($size =~ /^(\d+)x(\d+)$/){
+        $width  = $1;
+        $height = $2;
+    }
+
     my ($fh, $file) = tempfile;
 
     my @params = (
         end    => 'now',
         start  => "now - $seconds seconds",
-        width  => 500,
-        height => 100,
+        width  => $width,
+        height => $height,
     );
 
     $proc->statlog->save_graph_to($graph, $file, @params);
