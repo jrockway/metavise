@@ -14,6 +14,8 @@ use Metavise::Statlog;
 use MooseX::Types::Set::Object;
 use MooseX::Types::Path::Class qw(Dir);
 
+with 'Metavise::Role::AdHocWatcher';
+
 use 5.010;
 
 has 'root' => (
@@ -84,16 +86,6 @@ has 'statlog' => (
     lazy_build => 1,
 );
 
-has 'watchers' => (
-    isa     => 'Set::Object',
-    default => sub { Set::Object->new },
-    handles => {
-        add_watcher    => 'insert',
-        delete_watcher => 'delete',
-        watchers       => 'members',
-    },
-);
-
 sub BUILD { $_[0]->svstat; $_[0]->statlog }
 
 sub _build_svstat {
@@ -157,27 +149,8 @@ sub handle_change {
         ( $old->{pid_ok} ? 1 : 0 );
 
     if($pid_changed || $new->{paused} ne $old->{paused}){
-        for my $w ($self->watchers){
-            $self->delete_watcher($w);
-            $w->();
-        }
+        $self->run_watchers;
     }
-}
-
-sub timed_watcher {
-    my ($self, $time, $cb) = @_;
-    weaken $self;
-    my $t; $t = AnyEvent->timer(
-        after => $time,
-        cb    => sub {
-            undef $t;
-            $cb->($self);
-        },
-    );
-    $self->add_watcher(sub {
-        undef $t;
-        $cb->($self);
-    });
 }
 
 __PACKAGE__->meta->make_immutable;

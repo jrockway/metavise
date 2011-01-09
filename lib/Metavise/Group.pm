@@ -8,6 +8,8 @@ use Metavise::Process;
 use MooseX::Types::Path::Class qw(Dir);
 use Scalar::Util qw(weaken);
 
+with 'Metavise::Role::AdHocWatcher';
+
 has 'process_set' => (
     init_arg => 'processes',
     isa      => 'HashRef[Metavise::Process]',
@@ -59,6 +61,7 @@ sub BUILD {
 sub handle_change {
     my ($self, $dir, @rest) = @_;
     $self->on_change->($dir, @rest);
+    $self->run_watchers($dir, @rest);
 }
 
 sub add_directory {

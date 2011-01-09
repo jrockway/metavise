@@ -17,17 +17,43 @@ __PACKAGE__->config( default => 'application/json' );
 
 sub processes : Path('/process') Args(0) ActionClass('REST') {}
 
+sub all_processes {
+    my ($self, $c) = @_;
+    return map { $self->get_process_hash($_) } sort {
+        return $a->name cmp $b->name if
+            not($a->name =~ /log/ xor $b->name =~ /log/);
+
+        return  1 if $a->name =~ /log/ && $b->name !~ /log/;
+        return -1 if $b->name =~ /log/ && $a->name !~ /log/;
+    } $c->model('Processes')->processes;
+}
+
 sub processes_GET {
     my ($self, $c) = @_;
-    $self->status_ok( $c, entity => [
-        map { $self->get_process_hash($_) } sort {
-            return $a->name cmp $b->name if
-                not($a->name =~ /log/ xor $b->name =~ /log/);
+    $self->status_ok( $c, entity => [ $self->all_processes($c) ] );
+    $c->detach;
+}
 
-            return  1 if $a->name =~ /log/ && $b->name !~ /log/;
-            return -1 if $b->name =~ /log/ && $a->name !~ /log/;
-        } $c->model('Processes')->processes,
-    ]);
+sub long_poll : Path('/process/long_poll') Args(0) ActionClass('REST') {}
+
+sub long_poll_GET {
+    my ($self, $c) = @_;
+
+    my $group = $c->model('Processes');
+
+    $c->response->body(sub {
+        my $send_headers = shift;
+        my $stream = $send_headers->([200, [
+            'Content-Type' => 'application/json',
+        ]]);
+        $stream->{stream} = $stream;
+        $group->timed_watcher( 60 => sub {
+            $stream->write(
+                encode_json([ $self->all_processes($c) ]),
+            );
+            $stream->close;
+        });
+    });
     $c->detach;
 }
 
