@@ -92,26 +92,23 @@ $(document).ready(function() {
         template: _.template($("#process_template").html()),
 
         initialize: function() {
-            _.bindAll(this, "render", "svc");
+            _.bindAll(this, "render", "svc", "hover", "unhover");
             this.model.bind("change", this.render);
         },
 
         render: function() {
             var params = this.model.toJSON();
-            params.cpu = { big: {}, small: {} };
-            params.mem = { big: {}, small: {} };
-            params.cpu.small.graphURL = this.model.graph.small.cpu.url();
-            params.mem.small.graphURL = this.model.graph.small.mem.url();
-            params.cpu.big.graphURL = this.model.graph.big.cpu.url();
-            params.mem.big.graphURL = this.model.graph.big.mem.url();
+            params.cpu = { graphURL: this.model.graph.small.cpu.url() };
+            params.mem = { graphURL: this.model.graph.small.mem.url() };
             var html = this.template(params);
             $(this.el).html(html);
-            $(this.el).find("img").tooltip().dynamic();
             return $(this.el);
         },
 
         events: {
             "click .process_act": "svc",
+            "mouseenter img": "hover",
+            "mouseleave img": "unhover",
         },
 
         svc: function(e) {
@@ -132,6 +129,19 @@ $(document).ready(function() {
                 this.model.set({"needsConfirm": true, pendingCmd: cmd});
             }
         },
+
+        hover: function(e){
+            var cmd = $(e.currentTarget).attr("class").match(/cpu|mem/);
+            $("#hovergraph").append(
+                "<img src='" + this.model.graph.big[cmd].url() + "'/>"
+            );
+            $("#hovergraph").show();
+        },
+
+        unhover: function(e){
+            $("#hovergraph").hide();
+            $("#hovergraph").empty();
+        }
 
     });
 
