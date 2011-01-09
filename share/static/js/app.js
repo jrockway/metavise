@@ -4,7 +4,8 @@ var GraphModel = Backbone.Model.extend({
         height: 100
     },
     url: function() {
-        return "/process/" + this.get("process") + "/graphs/" +
+        return document.URL +
+            "process/" + this.get("process") + "/graphs/" +
             this.get("width") + "x" + this.get("height") + "/" +
             this.get("type") + ".png";
     }
@@ -47,7 +48,7 @@ var Process = Backbone.Model.extend({
 
 var ProcessCollection = Backbone.Collection.extend({
     model: Process,
-    url: "/process/"
+    url: document.URL + "process/"
 });
 
 var ProcessList = new ProcessCollection();
