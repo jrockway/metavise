@@ -30,3 +30,7 @@ a.graphlink {
 #graphdiv {
     text-align: center;
 }
+
+.buttons a {
+    cursor: pointer;
+}
