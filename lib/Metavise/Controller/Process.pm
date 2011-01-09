@@ -20,7 +20,13 @@ sub processes : Path('/process') Args(0) ActionClass('REST') {}
 sub processes_GET {
     my ($self, $c) = @_;
     $self->status_ok( $c, entity => [
-        map { $self->get_process_hash($_) } $c->model('Processes')->processes,
+        map { $self->get_process_hash($_) } sort {
+            return $a->name cmp $b->name if
+                not($a->name =~ /log/ xor $b->name =~ /log/);
+
+            return  1 if $a->name =~ /log/ && $b->name !~ /log/;
+            return -1 if $b->name =~ /log/ && $a->name !~ /log/;
+        } $c->model('Processes')->processes,
     ]);
     $c->detach;
 }
