@@ -1,16 +1,3 @@
-var Process = Backbone.Model.extend({
-    svc: function(c) {
-        this.set({ want: this.get("want") + c });
-    },
-});
-
-var ProcessCollection = Backbone.Collection.extend({
-    model: Process,
-    url: "/process/"
-});
-
-var ProcessList = new ProcessCollection();
-
 var GraphModel = Backbone.Model.extend({
     defaults: {
         width: 500,
@@ -23,13 +10,36 @@ var GraphModel = Backbone.Model.extend({
     }
 });
 
-var CurrentGraph = new GraphModel({ type: undefined, process: undefined });
+var Process = Backbone.Model.extend({
+    initialize: function() {
+        this.graph = {};
+        this.graph.cpu = new GraphModel({
+            process: this.id,
+            type: "cpu",
+            height: 40,
+            width: 130,
+        });
+        this.graph.mem = new GraphModel({
+            process: this.id,
+            type: "memory",
+            height: 40,
+            width: 130,
+        });
+    },
+    svc: function(c) {
+        this.set({ want: this.get("want") + c });
+    },
+});
 
+var ProcessCollection = Backbone.Collection.extend({
+    model: Process,
+    url: "/process/"
+});
+
+var ProcessList = new ProcessCollection();
 var ProcessView;
 var AppView;
-var GraphView;
 var App;
-var Graph;
 
 $(document).ready(function() {
     ProcessView = Backbone.View.extend({
@@ -43,25 +53,24 @@ $(document).ready(function() {
         },
 
         render: function() {
-            var html = this.template(this.model.toJSON());
+            var params = this.model.toJSON();
+            params.cpu = {};
+            params.mem = {};
+            params.cpu.graphURL = this.model.graph.cpu.url();
+            params.mem.graphURL = this.model.graph.mem.url();
+            var html = this.template(params);
             $(this.el).html(html);
             return $(this.el);
         },
 
         events: {
             "click .process_act": "svc",
-            "click .graphlink": "graph"
         },
 
         svc: function(e) {
             var cmd = $(e.currentTarget).text();
             this.model.svc(cmd);
             this.model.save();
-        },
-
-        graph: function(e) {
-            var type = $(e.currentTarget).attr("title");
-            CurrentGraph.set({ process: this.model.id, type: type });
         },
     });
 
@@ -85,33 +94,7 @@ $(document).ready(function() {
         },
     });
 
-    GraphView = Backbone.View.extend({
-        el: $("#graph"),
-        events: { "click": "click" },
-        interval: undefined,
-        initialize: function() {
-            $(this.el).hide();
-            _.bindAll(this, "render", "click");
-            CurrentGraph.bind("change", this.render);
-            $(this.el).hide();
-        },
-
-        render: function() {
-            if(this.model.get("process") == undefined){
-                $(this.el).hide();
-            }
-            else {
-                $(this.el).attr("src", window.location + this.model.url());
-                $(this.el).show();
-            }
-        },
-        click: function() {
-            this.model.set({ process: undefined });
-        }
-    });
-
     App = new AppView();
-    Graph = new GraphView({ model: CurrentGraph });
     ProcessList.fetch();
 
     setInterval( function() { ProcessList.fetch() }, 10000 );

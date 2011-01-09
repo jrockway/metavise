@@ -12,21 +12,18 @@
     background-color: black;
 }
 
-.odd   {
-    background-color: #00aa32; border: 1px solid red
-}
-
-a.graphlink {
-    text-decoration: underline;
-    color: black;
-    font-weight: normal;
-    border: none;
-}
-
 #graphdiv {
     text-align: center;
 }
 
 .buttons a {
     cursor: pointer;
+}
+
+.procname {
+    font-weight: bold;
+}
+
+.process {
+    margin-bottom: 30px;
 }

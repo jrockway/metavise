@@ -168,7 +168,7 @@ sub graphs : Chained('process') Args(2) {
         $c->req->params->{seconds} ? $c->req->params->{seconds} :
         $c->req->params->{minutes} ? $c->req->params->{minutes} * 60 :
         $c->req->params->{hours}   ? $c->req->params->{hours} * 60 * 60 :
-            8 * 60 * 60;
+            3 * 60 * 60;
 
     my $width  = 500;
     my $height = 100;
@@ -178,7 +178,7 @@ sub graphs : Chained('process') Args(2) {
         $height = $2;
     }
 
-    my ($fh, $file) = tempfile;
+    my @only_graph = $height > 60 ? () : (only_graph => undef);
 
     my @params = (
         end    => 'now',
@@ -187,7 +187,12 @@ sub graphs : Chained('process') Args(2) {
         height => $height,
     );
 
-    $proc->statlog->save_graph_to($graph, $file, @params);
+    my ($fh, $file) = tempfile;
+    $proc->statlog->save_graph_to(
+        $graph,
+        $file,
+        @params, @only_graph,
+    );
 
     $c->res->content_type('image/png');
     $c->res->body(scalar read_file($file));

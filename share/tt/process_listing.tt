@@ -1,26 +1,11 @@
-
 <div id="processes"></div>
-<div id="graphdiv"><img id="graph" alt="graph"></div>
 
 <script type="text/template" id="process_template">
-  <div class="process">
-    <div class="row">
-      <div class="onecol"><br /></div>
-      <div class="twocol"><b><%= name %></b></div>
-      <div class="eightcol">
-        <% if(up == 1) { %>
-          up <% if(paused == 1) { %>(paused)<% } %>
-          <%= pid %>
-        <% } else { %>
-          down
-        <% } %>
-        since <%= since %>
-      </div>
-      <div class="onecol last"><br /></div>
-    </div>
-    <div class="row">
-      <div class="onecol"><br /></div>
-      <div class="twocol buttons">
+  <div class="process row">
+    <div class="onecol"><br /></div>
+    <div class="twocol">
+      <div class="procname"><%= name %></div>
+      <div class="buttons">
         <% if(up == 0) { %><a title="start" class="process_act">u</a><% } %>
         <% if(up == 1) { %><a title="stop" class="process_act">d</a><% } %>
         <% if(up == 1){ %>
@@ -33,12 +18,31 @@
         <a title="hangup" class="process_act">h</a>
         <% } %>
       </div>
-      <div class="eightcol">
-        <a title="memory" class="graphlink"><%= top.mem_size %> (<%= top.mem_resident %>)</a>
-        <a title="cpu" class="graphlink"><%= top.time_utime %>user + <%= top.time_stime %>sys =  <%= top.time_total %></a>
-      </div>
-      <div class="onecol last"><br /></div>
     </div>
-    <br />
+    <div class="fourcol">
+      <div class="proctime">
+        <% if(up == 1) { %>
+        up <% if(paused == 1) { %>(paused)<% } %>
+        <%= pid %>
+        <% } else { %>
+        down
+        <% } %>
+        since <%= since %>
+      </div>
+      <div class="procstat">
+        <span title="memory" class="graphlink">
+          <%= top.mem_size %> (<%= top.mem_resident %>)
+        </span>
+        <span title="cpu" class="graphlink">
+          <%= top.time_utime %>user <%= top.time_stime %>sys =
+          <%= top.time_total %>total
+        </span>
+      </div>
+    </div>
+    <div class="fourcol">
+      <img src="<%= cpu.graphURL %>" />
+      <img src="<%= mem.graphURL %>" />
+    </div>
+    <div class="onecol last"><br /></div>
   </div>
 </script>

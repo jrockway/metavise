@@ -110,12 +110,12 @@ sub _build_graphs {
     my $self = shift;
     return {
         memory => [
-            draw => { dsname => 'resident', legend => 'resident', color => '00FF00' },
-            draw => { dsname => 'size', legend => 'size', color => '0000FF' },
+            draw => { dsname => 'resident', color => '00FF00' },
+            draw => { dsname => 'size', color => '0000FF' },
         ],
         cpu => [
-            draw => { dsname => 'utime', legend => 'utime', color => 'FF0000' },
-            draw => { dsname => 'stime', legend => 'stime', color => '00FF00' },
+            draw => { dsname => 'utime', color => 'FF0000' },
+            draw => { dsname => 'stime', color => '00FF00' },
         ],
     };
 }
