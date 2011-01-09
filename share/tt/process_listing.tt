@@ -39,9 +39,11 @@
         </span>
       </div>
     </div>
-    <div class="fourcol">
-      <img src="<%= cpu.graphURL %>" />
-      <img src="<%= mem.graphURL %>" />
+    <div class="procgraph fourcol">
+        <img class="small cpu graph" src="<%= cpu.small.graphURL %>" />
+        <img class="big cpu graph" src="<%= cpu.big.graphURL %>" style="display: none">
+        <img class="small mem graph" src="<%= mem.small.graphURL %>" />
+        <img class="big mem graph" src="<%= mem.big.graphURL %>" style="display: none">
     </div>
     <div class="onecol last"><br /></div>
   </div>

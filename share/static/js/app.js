@@ -12,18 +12,31 @@ var GraphModel = Backbone.Model.extend({
 
 var Process = Backbone.Model.extend({
     initialize: function() {
-        this.graph = {};
-        this.graph.cpu = new GraphModel({
+        this.graph = { small: {}, big: {} };
+        this.graph.small.cpu = new GraphModel({
             process: this.id,
             type: "cpu",
             height: 40,
             width: 130,
         });
-        this.graph.mem = new GraphModel({
+        this.graph.small.mem = new GraphModel({
             process: this.id,
             type: "memory",
             height: 40,
             width: 130,
+        });
+
+        this.graph.big.cpu = new GraphModel({
+            process: this.id,
+            type: "cpu",
+            height: 150,
+            width: 300,
+        });
+        this.graph.big.mem = new GraphModel({
+            process: this.id,
+            type: "memory",
+            height: 150,
+            width: 300,
         });
     },
     svc: function(c) {
@@ -48,18 +61,21 @@ $(document).ready(function() {
         template: _.template($("#process_template").html()),
 
         initialize: function() {
-            _.bindAll(this, "render", "svc", "graph");
+            _.bindAll(this, "render", "svc");
             this.model.bind("change", this.render);
         },
 
         render: function() {
             var params = this.model.toJSON();
-            params.cpu = {};
-            params.mem = {};
-            params.cpu.graphURL = this.model.graph.cpu.url();
-            params.mem.graphURL = this.model.graph.mem.url();
+            params.cpu = { big: {}, small: {} };
+            params.mem = { big: {}, small: {} };
+            params.cpu.small.graphURL = this.model.graph.small.cpu.url();
+            params.mem.small.graphURL = this.model.graph.small.mem.url();
+            params.cpu.big.graphURL = this.model.graph.big.cpu.url();
+            params.mem.big.graphURL = this.model.graph.big.mem.url();
             var html = this.template(params);
             $(this.el).html(html);
+            $(this.el).find("img").tooltip().dynamic();
             return $(this.el);
         },
 
@@ -72,6 +88,7 @@ $(document).ready(function() {
             this.model.svc(cmd);
             this.model.save();
         },
+
     });
 
     AppView = Backbone.View.extend({
