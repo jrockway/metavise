@@ -134,25 +134,6 @@ sub act_PUT {
     my ($self, $c) = @_;
     my $p = $c->stash->{process};
 
-    # this is cool; we apply a watcher to the process, and when its
-    # status changes we complete the requset.  or we decide it's been
-    # too long, and respond anyway.
-
-    $c->response->body(sub {
-        my $send_headers = shift;
-        my $stream = $send_headers->([202, [
-            'Content-Type' => 'application/json',
-        ]]);
-
-        $p->timed_watcher( 2 => sub {
-            my $p = shift;
-            $stream->write(
-                encode_json($self->get_process_hash($p)),
-            );
-            $stream->close;
-        });
-    });
-
     my @want = split //, $c->req->data->{want};
     for my $want (@want){
         if(!$allowed{$want}){
@@ -164,6 +145,8 @@ sub act_PUT {
         }
         $p->svc($want);
     }
+
+    $c->res->code(204);
     $c->detach;
 }
 

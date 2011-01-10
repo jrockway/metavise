@@ -118,11 +118,7 @@ $(document).ready(function() {
             if(this.model.get("needsConfirm") && cmd == "confirm"){
                 this.model.set({"needsConfirm": false}, {silent: true});
                 this.model.svc(this.model.get("pendingCmd"));
-                longPoll.xhr.abort();
-                this.model.save({}, {
-                    success: longPoll.poll,
-                    error: longPoll.poll,
-                });
+                this.model.save();
             }
             else if(this.model.get("needsConfirm") && cmd == "cancel") {
                 this.model.set({"needsConfirm": false});
