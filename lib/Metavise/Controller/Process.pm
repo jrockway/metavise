@@ -42,12 +42,11 @@ sub long_poll_GET {
     my $group = $c->model('Processes');
     $c->response->body(sub {
         my $send_headers = shift;
-        my $stream = $send_headers->([200, [
-            'Content-Type'  => 'application/json',
-            'Cache-Control' => 'no-cache',
-        ]]);
-        $stream->{stream} = $stream;
         $group->timed_watcher( 60 => sub {
+            my $stream = $send_headers->([200, [
+                'Content-Type'  => 'application/json',
+                'Cache-Control' => 'no-cache',
+            ]]);
             $stream->write(
                 encode_json([ $self->all_processes($c) ]),
             );
