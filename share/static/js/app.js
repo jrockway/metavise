@@ -67,12 +67,18 @@ var longPoll = {
         ProcessList.refresh(data);
     },
     poll: function() {
+        if(longPoll.retryTimeout != undefined){
+            clearTimeout(longPoll.retryTimeout);
+        }
         longPoll.retryTimeout = undefined;
+        if(longPoll.xhr != undefined && longPoll.xhr != null){
+            longPoll.xhr.abort();
+        }
         longPoll.xhr = $.ajax({
             url: document.URL + "process/long_poll",
             type: "GET",
             dataType: "json",
-            timeout: 120000,
+            timeout: 61000,
             error: function() { longPoll.retryLater() },
             success: function(data, status, xhr){
                 if(data != undefined && data != null){
