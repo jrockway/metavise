@@ -34,6 +34,7 @@
         down
         <% } %>
         since <%= since %>
+        last exit <%= last_exit %>
       </div>
       <div class="procstat">
         <span title="memory" class="graphlink">

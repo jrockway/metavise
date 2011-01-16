@@ -95,15 +95,16 @@ sub get_process_hash {
     $id =~ s{/}{%2F}g; # OH NOES SLASHES IN URLS OH NOES !!!!11!!
 
     return {
-        id     => scalar $id,
-        name   => scalar $p->name,
-        up     => scalar ($p->has_process ? 1 : 0),
-        pid    => scalar $p->get_pid,
-        since  => scalar $f->format_datetime($p->status->{time}),
-        paused => scalar ($p->status->{paused} ? 1 : 0),
-        want   => scalar $p->status->{want},
-        normal => scalar ($p->status->{normally_up} ? 'u' : 'd'),
-        top    => scalar $top,
+        id        => scalar $id,
+        name      => scalar $p->name,
+        up        => scalar ($p->has_process ? 1 : 0),
+        pid       => scalar $p->get_pid,
+        since     => scalar $f->format_datetime($p->status->{time}),
+        paused    => scalar ($p->status->{paused} ? 1 : 0),
+        want      => scalar $p->status->{want},
+        normal    => scalar ($p->status->{normally_up} ? 'u' : 'd'),
+        top       => scalar $top,
+        last_exit => scalar $p->status->{last_exit},
     };
 }
 

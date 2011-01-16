@@ -68,7 +68,11 @@ sub parse_status {
     return +{} unless -e $file; # perfectly legit; process is not
                                 # running yet, etc.
     my $data = $file->slurp;
-    my ($tai, $pid, $paused, $want) = unpack 'H24 L C C', $data;
+
+    # the first pattern is the default, the second is what my hacked
+    # version of supervise produces
+    my $pattern = length $data == 18 ? 'H24 L C C' : 'H24 L C C L';
+    my ($tai, $pid, $paused, $want, $exit) = unpack $pattern, $data;
     my $normallyup = !-e $self->target->file('down');
 
     # TODO: patch DateTime::Format::Epoch to understand tai64n
@@ -89,6 +93,7 @@ sub parse_status {
         want        => chr $want,
         normally_up => $normallyup ? 1 : 0,
         raw         => $data,
+        last_exit   => $exit,
     };
 }
 
