@@ -53,3 +53,7 @@
     <div class="onecol last"><br /></div>
   </div>
 </script>
+
+<script type="text/javascript">
+ProcessList.add([% processes %]);
+</script>

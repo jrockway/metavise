@@ -156,6 +156,7 @@ $(document).ready(function() {
             _.bindAll(this, "addOne", "addAll", "render");
             ProcessList.bind("add", this.addOne);
             ProcessList.bind("refresh", this.addAll);
+            this.addAll();
         },
 
         addOne: function(proc) {
@@ -170,7 +171,6 @@ $(document).ready(function() {
     });
 
     App = new AppView();
-    ProcessList.fetch();
     longPoll.poll();
 });
 

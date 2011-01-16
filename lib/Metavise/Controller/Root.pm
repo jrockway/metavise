@@ -3,6 +3,7 @@ package Metavise::Controller::Root;
 use Moose;
 use true;
 use namespace::autoclean;
+use JSON::XS;
 
 BEGIN { extends 'Catalyst::Controller' }
 
@@ -13,6 +14,8 @@ __PACKAGE__->config(
 sub process_listing : Path Args(0) {
     my ($self, $c) = @_;
     $c->stash->{title} = 'Process List';
+    $c->stash->{processes} =
+        encode_json([$c->controller('Process')->all_processes($c)]);
 }
 
 sub default : Path {
